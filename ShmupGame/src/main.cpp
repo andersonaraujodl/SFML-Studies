@@ -1,5 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "main.h"
+#include "spaceship.h"
 
 void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
 {
@@ -68,16 +68,22 @@ void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const 
 
 int main()
 {
+    //--------------------------------------- INITIALIZE ---------------------------------------
     sf::RenderWindow window(sf::VideoMode(800, 600), "Space Invaders 2.0");
     sf::FloatRect windowBounds(sf::Vector2f(0.f, 0.f), window.getDefaultView().getSize());
+    //--------------------------------------- INITIALIZE END ---------------------------------------
 
+
+    //--------------------------------------- PLAYER ---------------------------------------
     const float SPACESHIP_SIZE = 40.f;
-    sf::CircleShape triangle(SPACESHIP_SIZE, 3);
-    triangle.setFillColor(sf::Color::Yellow);
+    const size_t POINT_COUNT = 3;
+    Spaceship spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &windowBounds);
+    //--------------------------------------- PLAYER END ---------------------------------------
 
-   /* sf::Thread inputThread(&WatchInput, &window);
-    inputThread.launch();*/
-    //sf::Vector2f newPos(0, 0);
+
+    //--------------------------------------- BULLET ---------------------------------------
+   
+    //--------------------------------------- BULLET END ---------------------------------------
 
     while (window.isOpen())
     {
@@ -88,7 +94,7 @@ int main()
             if (event.type == sf::Event::KeyPressed)
             {
                 std::cout << "DEBUG: Key Pressed" << std::endl;
-                WatchInput(&triangle, event.key.code, &windowBounds);
+                WatchInput(spaceship.GetSpaceship(), event.key.code, &windowBounds);
             }
 
             if (event.type == sf::Event::Closed)
@@ -99,27 +105,11 @@ int main()
         {
             window.close();
         }
-
-        sf::Vector2f curPos = triangle.getPosition();
-
-        /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            newPos = sf::Vector2f(curPos.x - SPEED, curPos.y );            
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
-            newPos = sf::Vector2f( curPos.x + SPEED, curPos.y );
-        }*/
-
-       //trriangle.setPosition(newPos);
-
-        //if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        /*{
-            triangle.move(SPEED, 0);
-        }*/
         
         window.clear(sf::Color::Black);
 
-        window.draw(triangle);
+        window.draw(*spaceship.GetSpaceship());
+        //window.draw(bullet);
 
         window.display(); 
     }

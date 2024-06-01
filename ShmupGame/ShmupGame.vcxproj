@@ -19,7 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\bullet.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\spaceship.cpp" />
+    <ClCompile Include="src\weapon.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\bullet.h" />
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\spaceship.h" />
+    <ClInclude Include="src\weapon.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
