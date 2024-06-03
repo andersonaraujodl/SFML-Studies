@@ -1,16 +1,22 @@
 #pragma once
 #include "main.h"
+#include "bullet.h"
+#include "weapon.h"
 
 class Spaceship
 {
 private:
 	sf::CircleShape spaceship;
+	Weapon weapon;
 
 
 public:
-	Spaceship(const float* size, const size_t* pointCount, const sf::FloatRect* windowBounds);
+	Spaceship(const float* size, const size_t* pointCount, const Weapon* startWeapon, const sf::FloatRect* windowBounds);
 
 	sf::CircleShape* GetSpaceship();
 
-	void Shoot();
+	Weapon* GetWeapon();
+	void SetWeapon(const Weapon* newWeapon);
+
+	Bullet* Shoot();
 };

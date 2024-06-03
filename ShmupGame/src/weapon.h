@@ -1,21 +1,16 @@
 #pragma once
-
-enum BULLET_TYPE
-{
-	REGULAR,
-	DOUBLE,
-	TRIPLE,
-	LASER,
-	SPREAD,
-	BULLET_COUNT
-};
+#include "bullet.h"
+#include "main.h"
 
 class Weapon
 {
 private:
-	BULLET_TYPE bulletType;
+	WEAPON_TYPE weaponType;
 
 public:
-	void Shoot(BULLET_TYPE* bulletType);
+	Weapon(const WEAPON_TYPE weaponType);
+	Bullet* Shoot(const sf::Vector2f* spaceshipPos);
+	WEAPON_TYPE * GetWeaponType();
+	void SetWeaponType(const WEAPON_TYPE newWeaponType);
 
 };

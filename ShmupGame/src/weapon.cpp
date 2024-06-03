@@ -1,23 +1,24 @@
 #include "weapon.h"
-#include "bullet.h"
 
-BULLET_TYPE bulletType;
-
-void Shoot(const BULLET_TYPE* type, Bullet* bullet)
+Weapon::Weapon(const WEAPON_TYPE newWeaponType)
 {
-	bulletType = *type;
+	weaponType = newWeaponType;
+}
 
-	switch (bulletType)
-	{
-	case BULLET_TYPE::REGULAR:
-		bullet->SetDamage(1);
-		bullet->SetSpeed(5);
-		bullet->SetSpread(false);
-		break;
-	default:
-		bullet->SetDamage(1);
-		bullet->SetSpeed(5);
-		bullet->SetSpread(false);
-		break;
-	}
+Bullet* Weapon::Shoot(const sf::Vector2f* spaceshipPos)
+{
+	Bullet newBullet(weaponType, spaceshipPos);
+	return &newBullet;
+}
+
+WEAPON_TYPE* Weapon::GetWeaponType()
+{
+	return &weaponType;
+}
+
+void Weapon::SetWeaponType(const WEAPON_TYPE newWeaponType)
+{
+	weaponType = newWeaponType;
+	std::cout << "DEBUG: Set Weapon Type: " << weaponType << std::endl;
+
 }

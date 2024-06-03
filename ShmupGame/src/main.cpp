@@ -1,11 +1,13 @@
 #include "main.h"
 #include "spaceship.h"
+#include "weapon.h"
 
-void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
+void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, std::vector<Bullet*>* bullets, const sf::FloatRect* windowBounds)
 {
     const float SPEED = 5.f;
 
-    sf::Vector2f currPos = spaceship->getPosition();
+    sf::CircleShape* spaceshipShape = spaceship->GetSpaceship();
+    sf::Vector2f currPos = spaceshipShape->getPosition();
     sf::Vector2f newPos = currPos;
 
     //TODO This system doesn't support multiple inputs (diagonal move) - need to find a solution
@@ -22,7 +24,7 @@ void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const 
     else if (pressedKey == sf::Keyboard::Right || pressedKey == sf::Keyboard::D)
     {
         float newX = currPos.x + SPEED;
-        float screenLimit = windowBounds->width - (spaceship->getRadius() * 2);
+        float screenLimit = windowBounds->width - (spaceshipShape->getRadius() * 2);
 
         if (newX > screenLimit)
         {
@@ -47,7 +49,7 @@ void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const 
     else if (pressedKey == sf::Keyboard::Down || pressedKey == sf::Keyboard::S)
     {
         float newY = currPos.y + SPEED;
-        float screenLimit = windowBounds->height - (spaceship->getRadius() * 2);
+        float screenLimit = windowBounds->height - (spaceshipShape->getRadius() * 2);
 
         if (newY > screenLimit)
         {
@@ -61,9 +63,10 @@ void WatchInput(sf::CircleShape* spaceship, sf::Keyboard::Key pressedKey, const 
     if (pressedKey == sf::Keyboard::Space)
     {
         //Shoot
+        bullets->push_back(spaceship->Shoot());
     }
 
-    spaceship->setPosition(newPos);
+    spaceshipShape->setPosition(newPos);
 }
 
 int main()
@@ -77,12 +80,14 @@ int main()
     //--------------------------------------- PLAYER ---------------------------------------
     const float SPACESHIP_SIZE = 40.f;
     const size_t POINT_COUNT = 3;
-    Spaceship spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &windowBounds);
+    Weapon startWeapon(WEAPON_TYPE::REGULAR);
+    Spaceship spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &startWeapon, &windowBounds);
+
     //--------------------------------------- PLAYER END ---------------------------------------
 
 
     //--------------------------------------- BULLET ---------------------------------------
-   
+    std::vector<Bullet*> bullets;
     //--------------------------------------- BULLET END ---------------------------------------
 
     while (window.isOpen())
@@ -94,7 +99,7 @@ int main()
             if (event.type == sf::Event::KeyPressed)
             {
                 std::cout << "DEBUG: Key Pressed" << std::endl;
-                WatchInput(spaceship.GetSpaceship(), event.key.code, &windowBounds);
+                WatchInput(&spaceship, event.key.code, &bullets, &windowBounds);
             }
 
             if (event.type == sf::Event::Closed)
@@ -109,7 +114,11 @@ int main()
         window.clear(sf::Color::Black);
 
         window.draw(*spaceship.GetSpaceship());
-        //window.draw(bullet);
+
+        for (size_t i = 0; i < bullets.size(); ++i)
+        {
+            window.draw(*bullets[i]->GetBulletShape());
+        }
 
         window.display(); 
     }
