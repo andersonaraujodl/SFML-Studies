@@ -5,19 +5,21 @@ class Bullet
 {
 private:
 	sf::RectangleShape bulletShape;
-	const float BULLET_HEIGHT = 25.f;
-	const float BULLET_WIDTH = 7.f;
 	float damage;
 	float speed;
 	bool isSpread;
+	sf::Vector2f bulletSize;
+	sf::FloatRect windowBounds;
 
 public:
 	Bullet();
-	Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos);
+	Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* bulletSize);
 
 	void SetDamage(const float newDamage);
 	void SetSpeed(const float newSpeed);
 	void SetSpread(const bool newIsSpread);
 
 	sf::RectangleShape* GetBulletShape();
+
+	void Move();
 };

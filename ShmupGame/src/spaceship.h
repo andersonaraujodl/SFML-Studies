@@ -11,7 +11,7 @@ private:
 
 
 public:
-	Spaceship(const float* size, const size_t* pointCount, const Weapon* startWeapon, const sf::FloatRect* windowBounds);
+	Spaceship(const float* size, const size_t* pointCount, const Weapon* startWeapon, const sf::FloatRect* curWindowBounds);
 
 	sf::CircleShape* GetSpaceship();
 

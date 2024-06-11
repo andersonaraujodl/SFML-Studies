@@ -1,4 +1,7 @@
 #include "bullet.h"
+#include "globals.h"
+
+//TODO Create Entity to enherit Bullet from this
 
 Bullet::Bullet()
 {
@@ -7,25 +10,27 @@ Bullet::Bullet()
 	isSpread = 0;
 }
 
-Bullet::Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos)
+Bullet::Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* bulletSize)
 {
 	bulletShape.setPosition(*spaceshipPos);
-	bulletShape.setSize(sf::Vector2f(BULLET_WIDTH, BULLET_HEIGHT));
+	bulletShape.setSize(*bulletSize);
 	bulletShape.setFillColor(sf::Color::Red);
 
 	switch (weaponType)
 	{
 	case WEAPON_TYPE::REGULAR:
 		damage = 1;
-		speed = 5;
+		speed = -5;
 		isSpread = false;
 		break;
 	default:
 		damage = 1;
-		speed = 5;
+		speed = -5;
 		isSpread = false;
 		break;
 	}
+
+	Move();
 }
 
 void Bullet::SetDamage(const float newDamage)
@@ -46,4 +51,10 @@ void Bullet::SetSpread(const bool newIsSpread)
 sf::RectangleShape* Bullet::GetBulletShape()
 {
 	return &bulletShape;
+}
+
+void Bullet::Move()
+{
+	bulletShape.move(0, speed * GameGlobals::GetDeltaTime()->asSeconds() * 20);
+
 }

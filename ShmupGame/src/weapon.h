@@ -6,10 +6,12 @@ class Weapon
 {
 private:
 	WEAPON_TYPE weaponType;
+	float bulletHeight;
+	float bulletWidth;
 
 public:
 	Weapon(const WEAPON_TYPE weaponType);
-	Bullet* Shoot(const sf::Vector2f* spaceshipPos);
+	Bullet* Shoot(const sf::Vector2f* spaceshipPos, const float spaceshipRadius);
 	WEAPON_TYPE * GetWeaponType();
 	void SetWeaponType(const WEAPON_TYPE newWeaponType);
 

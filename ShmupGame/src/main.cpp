@@ -1,8 +1,9 @@
 #include "main.h"
 #include "spaceship.h"
 #include "weapon.h"
+#include "globals.h"
 
-void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, std::vector<Bullet*>* bullets, const sf::FloatRect* windowBounds)
+void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
 {
     const float SPEED = 5.f;
 
@@ -63,7 +64,7 @@ void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, std::vector<
     if (pressedKey == sf::Keyboard::Space)
     {
         //Shoot
-        bullets->push_back(spaceship->Shoot());
+        GameGlobals::GetBullets()->push_back(spaceship->Shoot());
     }
 
     spaceshipShape->setPosition(newPos);
@@ -71,27 +72,35 @@ void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, std::vector<
 
 int main()
 {
+    GameGlobals gameGlobals;
+
     //--------------------------------------- INITIALIZE ---------------------------------------
     sf::RenderWindow window(sf::VideoMode(800, 600), "Space Invaders 2.0");
     sf::FloatRect windowBounds(sf::Vector2f(0.f, 0.f), window.getDefaultView().getSize());
+    GameGlobals::SetGameWindowBounds(&windowBounds);
+    window.setFramerateLimit(60);
+    sf::Clock clock;
     //--------------------------------------- INITIALIZE END ---------------------------------------
-
 
     //--------------------------------------- PLAYER ---------------------------------------
     const float SPACESHIP_SIZE = 40.f;
     const size_t POINT_COUNT = 3;
     Weapon startWeapon(WEAPON_TYPE::REGULAR);
     Spaceship spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &startWeapon, &windowBounds);
-
     //--------------------------------------- PLAYER END ---------------------------------------
 
 
     //--------------------------------------- BULLET ---------------------------------------
     std::vector<Bullet*> bullets;
+    gameGlobals.SetBullets(&bullets);
+
     //--------------------------------------- BULLET END ---------------------------------------
 
     while (window.isOpen())
     {
+        GameGlobals::SetDeltaTime(clock.getElapsedTime());
+        clock.restart();
+
         sf::Event event;
 
         while (window.pollEvent(event))
@@ -99,7 +108,7 @@ int main()
             if (event.type == sf::Event::KeyPressed)
             {
                 std::cout << "DEBUG: Key Pressed" << std::endl;
-                WatchInput(&spaceship, event.key.code, &bullets, &windowBounds);
+                WatchInput(&spaceship, event.key.code, &windowBounds);
             }
 
             if (event.type == sf::Event::Closed)
@@ -111,16 +120,22 @@ int main()
             window.close();
         }
         
+        std::vector<Bullet*>* m_bullets = GameGlobals::GetBullets();
+        for (size_t i = 0; i < m_bullets->size(); ++i)
+        {
+           (*m_bullets)[i]->Move();
+        }
+        
         window.clear(sf::Color::Black);
 
         window.draw(*spaceship.GetSpaceship());
-
-        for (size_t i = 0; i < bullets.size(); ++i)
+        
+        for (size_t i = 0; i < m_bullets->size(); ++i)
         {
-            window.draw(*bullets[i]->GetBulletShape());
+            window.draw(*((*m_bullets)[i]->GetBulletShape()));
         }
 
-        window.display(); 
+        window.display();
     }
 
     return 0;
