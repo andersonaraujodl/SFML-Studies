@@ -3,11 +3,11 @@
 #include "weapon.h"
 #include "globals.h"
 
-void WatchInput(Spaceship* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
+void WatchInput(Entity* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
 {
     const float SPEED = 5.f;
 
-    sf::CircleShape* spaceshipShape = spaceship->GetSpaceship();
+    sf::CircleShape* spaceshipShape = spaceship->GetEntity();
     sf::Vector2f currPos = spaceshipShape->getPosition();
     sf::Vector2f newPos = currPos;
 
@@ -80,17 +80,22 @@ int main()
     GameGlobals::SetGameWindowBounds(&windowBounds);
     window.setFramerateLimit(60);
     sf::Clock clock;
-    //--------------------------------------- INITIALIZE END ---------------------------------------
+    //--------------------------------------- ENEMY INITIALIZE ---------------------------------------
+    bool spawnedEnemy = false;
+    float enemySpawnTimeControl = 0;
+    float randomFloat = (float)(rand()) / (float)(rand());
+    float randTime = std::fmod(randomFloat, *gameGlobals.GetMaxSpawnTime() - *gameGlobals.GetMinSpawnTime() ) + *gameGlobals.GetMinSpawnTime();
+    //--------------------------------------- INITIALIZE END ------------------------------------
 
-    //--------------------------------------- PLAYER ---------------------------------------
+    //--------------------------------------- PLAYER -------------------------------------------
     const float SPACESHIP_SIZE = 40.f;
     const size_t POINT_COUNT = 3;
     Weapon startWeapon(WEAPON_TYPE::REGULAR);
-    Spaceship spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &startWeapon, &windowBounds);
+    Entity spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &startWeapon, &windowBounds);
     //--------------------------------------- PLAYER END ---------------------------------------
 
 
-    //--------------------------------------- BULLET ---------------------------------------
+    //--------------------------------------- BULLET -------------------------------------------
     std::vector<Bullet*> bullets;
     gameGlobals.SetBullets(&bullets);
 
@@ -99,7 +104,7 @@ int main()
     while (window.isOpen())
     {
         GameGlobals::SetDeltaTime(clock.getElapsedTime());
-        clock.restart();
+        sf::Time elapsedTime = clock.restart();
 
         sf::Event event;
 
@@ -121,14 +126,39 @@ int main()
         }
         
         std::vector<Bullet*>* m_bullets = GameGlobals::GetBullets();
-        for (size_t i = 0; i < m_bullets->size(); ++i)
+        size_t vecSize = m_bullets->size();
+
+        for (size_t i = 0; i < vecSize; ++i)
         {
-           (*m_bullets)[i]->Move();
+            if ((*m_bullets)[i]->Move())
+            {
+                if (vecSize > 1)
+                {
+                    std::swap((*m_bullets)[i], (*m_bullets)[vecSize - 1]); //send element to the end of the vector
+                }
+
+                --vecSize;
+                m_bullets->resize(vecSize);
+            }
         }
         
         window.clear(sf::Color::Black);
 
-        window.draw(*spaceship.GetSpaceship());
+        window.draw(*spaceship.GetEntity());
+
+        //Spawn Enemies
+
+        enemySpawnTimeControl += elapsedTime.asSeconds();
+
+        if (enemySpawnTimeControl >= randTime)
+        {
+            gameGlobals.SpawnEnemy(&enemySpawnTimeControl, &randTime);
+
+            enemySpawnTimeControl = 0;
+            randomFloat = (float)(rand()) / (float)(rand());
+            randTime = std::fmod(randomFloat, *gameGlobals.GetMaxSpawnTime() - *gameGlobals.GetMinSpawnTime()) + *gameGlobals.GetMinSpawnTime();
+        }
+       
         
         for (size_t i = 0; i < m_bullets->size(); ++i)
         {

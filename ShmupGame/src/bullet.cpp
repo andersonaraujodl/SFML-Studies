@@ -2,7 +2,6 @@
 #include "globals.h"
 
 //TODO Create Entity to enherit Bullet from this
-
 Bullet::Bullet()
 {
 	damage = 0;
@@ -10,27 +9,33 @@ Bullet::Bullet()
 	isSpread = 0;
 }
 
-Bullet::Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* bulletSize)
+Bullet::Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* setBulletSize)
 {
 	bulletShape.setPosition(*spaceshipPos);
-	bulletShape.setSize(*bulletSize);
+	bulletSize = *setBulletSize;
+	bulletShape.setSize(bulletSize);
 	bulletShape.setFillColor(sf::Color::Red);
-
+	
 	switch (weaponType)
 	{
 	case WEAPON_TYPE::REGULAR:
 		damage = 1;
-		speed = -5;
+		speed = -200;
 		isSpread = false;
 		break;
 	default:
 		damage = 1;
-		speed = -5;
+		speed = -200;
 		isSpread = false;
 		break;
 	}
 
 	Move();
+}
+
+Bullet::~Bullet()
+{
+	std::cout << "DEBUG: DESTROYED" << std::endl;
 }
 
 void Bullet::SetDamage(const float newDamage)
@@ -53,8 +58,10 @@ sf::RectangleShape* Bullet::GetBulletShape()
 	return &bulletShape;
 }
 
-void Bullet::Move()
+bool Bullet::Move()
 {
-	bulletShape.move(0, speed * GameGlobals::GetDeltaTime()->asSeconds() * 20);
+	//TODO Check Collision
+	bulletShape.move(0, speed * GameGlobals::GetDeltaTime()->asSeconds());
 
+	return bulletShape.getPosition().y < - bulletSize.y ;
 }

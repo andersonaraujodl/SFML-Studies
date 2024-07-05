@@ -13,7 +13,9 @@ private:
 
 public:
 	Bullet();
-	Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* bulletSize);
+	Bullet(const WEAPON_TYPE weaponType, const sf::Vector2f* spaceshipPos, const sf::Vector2f* setBulletSize);
+
+	~Bullet();
 
 	void SetDamage(const float newDamage);
 	void SetSpeed(const float newSpeed);
@@ -21,5 +23,5 @@ public:
 
 	sf::RectangleShape* GetBulletShape();
 
-	void Move();
+	bool Move();
 };
