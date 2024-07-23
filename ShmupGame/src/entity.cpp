@@ -1,5 +1,11 @@
 #include "entity.h"
 
+Entity::Entity()
+{
+	//default constructor
+}
+
+
 Entity::Entity(const float* size, const size_t* pointCount, const Weapon* startWeapon, const sf::FloatRect* curWindowBounds) : weapon(WEAPON_TYPE::REGULAR)
 {
 	weapon = *startWeapon;

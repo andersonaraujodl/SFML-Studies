@@ -5,7 +5,7 @@
 
 void WatchInput(Entity* spaceship, sf::Keyboard::Key pressedKey, const sf::FloatRect* windowBounds)
 {
-    const float SPEED = 5.f;
+    const float SPEED = 8.f;
 
     sf::CircleShape* spaceshipShape = spaceship->GetEntity();
     sf::Vector2f currPos = spaceshipShape->getPosition();
@@ -93,12 +93,10 @@ int main()
     Weapon startWeapon(WEAPON_TYPE::REGULAR);
     Entity spaceship(&SPACESHIP_SIZE, &POINT_COUNT, &startWeapon, &windowBounds);
     //--------------------------------------- PLAYER END ---------------------------------------
-
-
+    
     //--------------------------------------- BULLET -------------------------------------------
     std::vector<Bullet*> bullets;
     gameGlobals.SetBullets(&bullets);
-
     //--------------------------------------- BULLET END ---------------------------------------
 
     while (window.isOpen())
@@ -126,19 +124,36 @@ int main()
         }
         
         std::vector<Bullet*>* m_bullets = GameGlobals::GetBullets();
-        size_t vecSize = m_bullets->size();
+        size_t bulletsVecSize = m_bullets->size();
 
-        for (size_t i = 0; i < vecSize; ++i)
+        for (size_t i = 0; i < bulletsVecSize; ++i)
         {
             if ((*m_bullets)[i]->Move())
             {
-                if (vecSize > 1)
+                if (bulletsVecSize > 1)
                 {
-                    std::swap((*m_bullets)[i], (*m_bullets)[vecSize - 1]); //send element to the end of the vector
+                    std::swap((*m_bullets)[i], (*m_bullets)[bulletsVecSize - 1]); //send element to the end of the vector
                 }
 
-                --vecSize;
-                m_bullets->resize(vecSize);
+                --bulletsVecSize;
+                m_bullets->resize(bulletsVecSize);
+            }
+        }
+
+        std::vector<Enemy*>* m_enemies = GameGlobals::GetEnemies();
+        size_t enemyVecSize = m_enemies->size();
+
+        for (size_t i = 0; i < enemyVecSize; ++i)
+        {
+            if ((*m_enemies)[i]->Move())
+            {
+                if (enemyVecSize > 1)
+                {
+                    std::swap((*m_enemies)[i], (*m_enemies)[enemyVecSize - 1]); //send element to the end of the vector
+                }
+
+                --enemyVecSize;
+                m_enemies->resize(enemyVecSize);
             }
         }
         
@@ -152,17 +167,21 @@ int main()
 
         if (enemySpawnTimeControl >= randTime)
         {
-            gameGlobals.SpawnEnemy(&enemySpawnTimeControl, &randTime);
+            gameGlobals.SpawnEnemy();
 
             enemySpawnTimeControl = 0;
             randomFloat = (float)(rand()) / (float)(rand());
             randTime = std::fmod(randomFloat, *gameGlobals.GetMaxSpawnTime() - *gameGlobals.GetMinSpawnTime()) + *gameGlobals.GetMinSpawnTime();
         }
-       
         
-        for (size_t i = 0; i < m_bullets->size(); ++i)
+        for (size_t i = 0; i < bulletsVecSize; ++i)
         {
             window.draw(*((*m_bullets)[i]->GetBulletShape()));
+        }
+
+        for (size_t i = 0; i < enemyVecSize; ++i)
+        {
+            window.draw(*((*m_enemies)[i]->GetEnemyShape()));
         }
 
         window.display();

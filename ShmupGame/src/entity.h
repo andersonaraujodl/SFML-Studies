@@ -10,6 +10,7 @@ private:
 	Weapon weapon;
 
 public:
+	Entity();
 	Entity(const float* size, const size_t* pointCount, const Weapon* startWeapon, const sf::FloatRect* curWindowBounds);
 
 	sf::CircleShape* GetEntity();

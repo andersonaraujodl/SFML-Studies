@@ -3,10 +3,17 @@
 sf::Time GameGlobals::g_deltaTime;
 sf::FloatRect GameGlobals::g_gameWindowBounds;
 std::vector<Bullet*> GameGlobals::g_bullets;
+std::vector<Enemy*> GameGlobals::g_enemies;
 
-void GameGlobals::SpawnEnemy(const float* time1, const float* time2)
+void GameGlobals::SpawnEnemy()
 {
-	std::cout << "Spawn enemy: " << *time1 << " --- " << *time2 << std::endl;
+	const size_t POINT_COUNT = 4;
+	Weapon startWeapon(WEAPON_TYPE::REGULAR);
+	Enemy* newEnemy = new Enemy(&POINT_COUNT, &startWeapon, &g_gameWindowBounds);
+	
+	g_enemies.push_back(newEnemy);
+
+	std::cout << "Spawn enemy: " << std::endl;
 }
 
 const float* GameGlobals::GetMinSpawnTime()

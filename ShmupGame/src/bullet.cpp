@@ -63,5 +63,5 @@ bool Bullet::Move()
 	//TODO Check Collision
 	bulletShape.move(0, speed * GameGlobals::GetDeltaTime()->asSeconds());
 
-	return bulletShape.getPosition().y < - bulletSize.y ;
+	return bulletShape.getPosition().y < - bulletSize.y;
 }

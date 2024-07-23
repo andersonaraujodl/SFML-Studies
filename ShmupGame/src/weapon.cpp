@@ -1,5 +1,10 @@
 #include "weapon.h"
 
+Weapon::Weapon()
+{
+	//default constructor;
+}
+
 Weapon::Weapon(const WEAPON_TYPE newWeaponType)
 {
 	weaponType = newWeaponType;

@@ -8,8 +8,8 @@
 class GameGlobals
 {
 private:
-	const float base_spawn_time_min = 5.0f;
-	const float base_spawn_time_max = 11.0f;
+	const float base_spawn_time_min = 3.0f; //default 3
+	const float base_spawn_time_max = 11.0f; //default 10
 
 	static sf::Time g_deltaTime;
 	static sf::FloatRect g_gameWindowBounds;
@@ -47,7 +47,17 @@ public:
 		g_bullets = *bullets;
 	}
 
-	void SpawnEnemy(const float* time1, const float* time2);
+	static std::vector<Enemy*>* GetEnemies()
+	{
+		return &g_enemies;
+	}
+
+	static void SetEnemies(const std::vector<Enemy*>* enemies)
+	{
+		g_enemies = *enemies;
+	}
+
+	void SpawnEnemy();
 
 	const float* GetMinSpawnTime();
 

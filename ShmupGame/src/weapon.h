@@ -10,6 +10,7 @@ private:
 	float bulletWidth;
 
 public:
+	Weapon();
 	Weapon(const WEAPON_TYPE weaponType);
 	Bullet* Shoot(const sf::Vector2f* spaceshipPos, const float spaceshipRadius);
 	WEAPON_TYPE * GetWeaponType();
